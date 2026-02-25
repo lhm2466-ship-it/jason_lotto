@@ -21,6 +21,11 @@
                 </div>
             </div>
             <div class="bonus-tag">보너스</div>
+
+            <!-- 사이드바 광고 슬롯 (Vertical/Square) -->
+            <div class="ad-slot sidebar-ad" style="margin-top: 30px;">
+                <div class="ad-placeholder">광고 영역</div>
+            </div>
         </aside>
 
         <div class="container">
@@ -28,6 +33,11 @@
             <img class="logo-img" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 60'%3E%3Cg font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle' fill='%23fff'%3E%3Ccircle cx='30' cy='30' r='25' fill='%23fbc400'/%3E%3Ctext x='30' y='41'%3EL%3C/text%3E%3Ccircle cx='80' cy='30' r='25' fill='%2369c8f2'/%3E%3Ctext x='80' y='41'%3EO%3C/text%3E%3Ccircle cx='130' cy='30' r='25' fill='%23ff7272'/%3E%3Ctext x='130' y='41'%3ET%3C/text%3E%3Ccircle cx='180' cy='30' r='25' fill='%23aaaaaa'/%3E%3Ctext x='180' y='41'%3ET%3C/text%3E%3Ccircle cx='230' cy='30' r='25' fill='%23b0d840'/%3E%3Ctext x='230' y='41'%3EO%3C/text%3E%3C/g%3E%3C/svg%3E" alt="LOTTO Logo">
             
             <h1>맞춤형 로또 번호 생성기<span class="version">v2.0</span></h1>
+
+            <!-- 상단 광고 슬롯 (Leaderboard) -->
+            <div class="ad-slot top-ad">
+                <div class="ad-placeholder">광고 영역 (가로형)</div>
+            </div>
             
             <div class="selection-area">
                 <div class="selection-header">
@@ -35,6 +45,11 @@
                     <button class="reset-btn" onclick="resetSelection()">초기화</button>
                 </div>
                 <div class="number-grid" id="numberGrid"></div>
+            </div>
+
+            <!-- 중간 광고 슬롯 (In-feed) -->
+            <div class="ad-slot mid-ad">
+                <div class="ad-placeholder">광고 영역 (콘텐츠형)</div>
             </div>
 
             <div class="ball-container" id="result">
@@ -48,7 +63,16 @@
 
         <div class="comments-container">
             <div id="disqus_thread"></div>
+            <!-- 댓글창 하단 광고 슬롯 -->
+            <div class="ad-slot sidebar-ad">
+                <div class="ad-placeholder">광고 영역 (사각형)</div>
+            </div>
         </div>
+    </div>
+
+    <!-- 하단 앵커 광고 슬롯 -->
+    <div class="ad-slot bottom-ad">
+        <div class="ad-placeholder">하단 배너 광고 영역</div>
     </div>
 
     <script>

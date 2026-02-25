@@ -292,6 +292,41 @@ button.share-btn:active { transform: translateY(1px); }
 
 .comments-container {
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 광고 슬롯 스타일 (AdSense 최적화용) */
+.ad-slot {
+    margin: 20px auto;
+    width: 100%;
+    text-align: center;
+    background: var(--selection-bg);
+    border: 1px dashed var(--btn-border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.top-ad { min-height: 90px; }
+.mid-ad { min-height: 100px; margin-bottom: 25px; }
+.sidebar-ad { min-height: 250px; }
+.bottom-ad { 
+    max-width: 1400px;
+    width: 98%;
+    min-height: 90px;
+    margin-top: 40px;
+}
+
+.ad-placeholder {
+    color: var(--muted-text);
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* 모바일 및 태블릿 화면 조정 */
