@@ -12,8 +12,28 @@ let lastGenerated = null;
         btn.onclick = function() { toggleNumber(i, btn); };
         grid.appendChild(btn);
     }
+    
+    // 테마 초기화
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('themeToggle').innerText = '☀️';
+    }
+
     renderBalls();
 })();
+
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    const toggleBtn = document.getElementById('themeToggle');
+    if (isDark) {
+        toggleBtn.innerText = '☀️';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        toggleBtn.innerText = '🌓';
+        localStorage.setItem('theme', 'light');
+    }
+}
 
 function getBallColorClass(num) {
     if (num <= 10) return 'ball-yellow';
