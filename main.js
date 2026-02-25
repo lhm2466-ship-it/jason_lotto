@@ -21,8 +21,31 @@ let gameModes = ['자동', '자동', '자동', '자동', '자동'];
         document.getElementById('themeToggle').innerText = '☀️';
     }
 
+    // 지난주 당첨 번호 표시 (예시 데이터)
+    displayWinningNumbers();
+
     renderBalls();
 })();
+
+function displayWinningNumbers() {
+    // 실제 서비스에서는 API를 통해 가져오지만, 여기서는 최신 회차 예시 데이터를 사용합니다.
+    const lastDraw = {
+        round: 1212,
+        date: '2026-02-21',
+        numbers: [3, 11, 15, 22, 37, 41],
+        bonus: 9
+    };
+
+    document.getElementById('drawInfo').innerText = `제 ${lastDraw.round}회 (${lastDraw.date})`;
+    
+    const ballsContainer = document.getElementById('winningBalls');
+    ballsContainer.innerHTML = lastDraw.numbers
+        .map(num => `<span class="ball ${getBallColorClass(num)}">${num}</span>`)
+        .join('');
+
+    const bonusContainer = document.getElementById('bonusBallContainer');
+    bonusContainer.innerHTML = `<span class="ball ${getBallColorClass(lastDraw.bonus)}">${lastDraw.bonus}</span>`;
+}
 
 function toggleTheme() {
     const isDark = document.body.classList.toggle('dark-mode');

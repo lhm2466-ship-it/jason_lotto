@@ -7,26 +7,43 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="테마 변경">🌓</button>
-        <img class="logo-img" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 60'%3E%3Cg font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle' fill='%23fff'%3E%3Ccircle cx='30' cy='30' r='25' fill='%23fbc400'/%3E%3Ctext x='30' y='41'%3EL%3C/text%3E%3Ccircle cx='80' cy='30' r='25' fill='%2369c8f2'/%3E%3Ctext x='80' y='41'%3EO%3C/text%3E%3Ccircle cx='130' cy='30' r='25' fill='%23ff7272'/%3E%3Ctext x='130' y='41'%3ET%3C/text%3E%3Ccircle cx='180' cy='30' r='25' fill='%23aaaaaa'/%3E%3Ctext x='180' y='41'%3ET%3C/text%3E%3Ccircle cx='230' cy='30' r='25' fill='%23b0d840'/%3E%3Ctext x='230' y='41'%3EO%3C/text%3E%3C/g%3E%3C/svg%3E" alt="LOTTO Logo">
-        
-        <h1>맞춤형 로또 번호 생성기<span class="version">v2.0</span></h1>
-        
-        <div class="selection-area">
-            <div class="selection-header">
-                <div class="selection-title">원하는 번호를 미리 선택해 보세요 (최대 5개)</div>
-                <button class="reset-btn" onclick="resetSelection()">초기화</button>
+    <div class="app-wrapper">
+        <aside class="sidebar">
+            <h2>지난주 당첨 번호</h2>
+            <div id="drawInfo" class="draw-info">로딩 중...</div>
+            <div id="winningBalls" class="winning-balls">
+                <!-- 당첨 번호 공들 -->
             </div>
-            <div class="number-grid" id="numberGrid"></div>
-        </div>
+            <div class="bonus-area">
+                <span>+</span>
+                <div id="bonusBallContainer">
+                    <!-- 보너스 번호 공 -->
+                </div>
+            </div>
+            <div class="bonus-tag">보너스</div>
+        </aside>
 
-        <div class="ball-container" id="result">
+        <div class="container">
+            <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="테마 변경">🌓</button>
+            <img class="logo-img" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 60'%3E%3Cg font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle' fill='%23fff'%3E%3Ccircle cx='30' cy='30' r='25' fill='%23fbc400'/%3E%3Ctext x='30' y='41'%3EL%3C/text%3E%3Ccircle cx='80' cy='30' r='25' fill='%2369c8f2'/%3E%3Ctext x='80' y='41'%3EO%3C/text%3E%3Ccircle cx='130' cy='30' r='25' fill='%23ff7272'/%3E%3Ctext x='130' y='41'%3ET%3C/text%3E%3Ccircle cx='180' cy='30' r='25' fill='%23aaaaaa'/%3E%3Ctext x='180' y='41'%3ET%3C/text%3E%3Ccircle cx='230' cy='30' r='25' fill='%23b0d840'/%3E%3Ctext x='230' y='41'%3EO%3C/text%3E%3C/g%3E%3C/svg%3E" alt="LOTTO Logo">
+            
+            <h1>맞춤형 로또 번호 생성기<span class="version">v2.0</span></h1>
+            
+            <div class="selection-area">
+                <div class="selection-header">
+                    <div class="selection-title">원하는 번호를 미리 선택해 보세요 (최대 5개)</div>
+                    <button class="reset-btn" onclick="resetSelection()">초기화</button>
+                </div>
+                <div class="number-grid" id="numberGrid"></div>
             </div>
-        
-        <div class="button-group">
-            <button id="generateBtn" class="generate-btn" onclick="generateLotto()">5게임 생성하기</button>
-            <button class="share-btn" onclick="shareResult()">📤 공유</button>
+
+            <div class="ball-container" id="result">
+                </div>
+            
+            <div class="button-group">
+                <button id="generateBtn" class="generate-btn" onclick="generateLotto()">5게임 생성하기</button>
+                <button class="share-btn" onclick="shareResult()">📤 공유</button>
+            </div>
         </div>
     </div>
 
