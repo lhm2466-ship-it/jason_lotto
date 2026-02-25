@@ -98,6 +98,40 @@ body {
 
 /* Sidebar & Info Columns */
 .sidebar { flex: 1; text-align: center; }
+
+/* 최신 당첨 결과 번호 가로 정렬 및 크기 조정 */
+.winning-balls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+.winning-balls .ball {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+.bonus-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-top: 1px solid var(--selection-border);
+    padding-top: 15px;
+    margin-top: 10px;
+}
+.bonus-area span {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--muted-text);
+}
+.bonus-area .ball {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+}
 .container { flex: 1.5; text-align: center; }
 .info-column { flex: 1; display: flex; flex-direction: column; gap: 25px; }
 
