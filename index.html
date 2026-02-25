@@ -1,14 +1,49 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맞춤형 로또 번호 생성기 v2.0</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+    <div class="container">
+        <img class="logo-img" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 60'%3E%3Cg font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle' fill='%23fff'%3E%3Ccircle cx='30' cy='30' r='25' fill='%23fbc400'/%3E%3Ctext x='30' y='41'%3EL%3C/text%3E%3Ccircle cx='80' cy='30' r='25' fill='%2369c8f2'/%3E%3Ctext x='80' y='41'%3EO%3C/text%3E%3Ccircle cx='130' cy='30' r='25' fill='%23ff7272'/%3E%3Ctext x='130' y='41'%3ET%3C/text%3E%3Ccircle cx='180' cy='30' r='25' fill='%23aaaaaa'/%3E%3Ctext x='180' y='41'%3ET%3C/text%3E%3Ccircle cx='230' cy='30' r='25' fill='%23b0d840'/%3E%3Ctext x='230' y='41'%3EO%3C/text%3E%3C/g%3E%3C/svg%3E" alt="LOTTO Logo">
+        
+        <h1>맞춤형 로또 번호 생성기<span class="version">v2.0</span></h1>
+        
+        <div class="selection-area">
+            <div class="selection-header">
+                <div class="selection-title">원하는 번호를 미리 선택해 보세요 (최대 5개)</div>
+                <button class="reset-btn" onclick="resetSelection()">초기화</button>
+            </div>
+            <div class="number-grid" id="numberGrid"></div>
+        </div>
+
+        <div class="ball-container" id="result">
+            </div>
+        
+        <div class="button-group">
+            <button id="generateBtn" class="generate-btn" onclick="generateLotto()">5게임 생성하기</button>
+            <button class="share-btn" onclick="shareResult()">📤 공유</button>
+        </div>
+    </div>
+
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">×</span>
+            <h2 style="margin-top: 0; color: #333; font-size: 20px;">이미지 생성 완료! 🍀</h2>
+            <div class="preview-text">
+                <p><b>[PC]</b> 이미지를 <b>우클릭하여 '이미지 복사'</b> 후 원하는 곳에 붙여넣기<br>
+                <b>[모바일]</b> 이미지를 <b>꾹 눌러서 '공유/복사'</b> 하세요!</p>
+            </div>
+            <img id="previewImg" class="preview-img" src="" alt="생성된 로또 번호 이미지">
+            <div>
+                <button class="generate-btn" style="font-size: 15px; padding: 12px 20px;" onclick="downloadImage()">💾 이미지로 다운로드</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
 </body>
 </html>

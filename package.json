@@ -1,0 +1,12 @@
+{
+  "name": "lotto-number-generator",
+  "version": "1.0.0",
+  "description": "A simple lotto number generator.",
+  "main": "main.js",
+  "scripts": {
+    "start": "npx http-server -c-1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
