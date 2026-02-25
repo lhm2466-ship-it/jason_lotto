@@ -32,57 +32,38 @@ async function updateWinningNumbers() {
     const ballsContainer = document.getElementById('winningBalls');
     const bonusContainer = document.getElementById('bonusBallContainer');
 
-    // 현재 날짜 기준 최신 회차 계산
-    const getLatestRound = () => {
-        const firstDrawDate = new Date('2002-12-07T21:00:00+09:00');
-        const now = new Date();
-        const diff = now - firstDrawDate;
-        const weeks = Math.floor(diff / (7 * 24 * 60 * 60 * 1000));
-        return weeks + 1;
-    };
-
-    const latestRound = getLatestRound();
-    
-    // 1. 로컬 스토리지에서 캐시된 데이터 확인
+    // 1. 로컬 저장소(브라우저 캐시) 우선 확인 (가장 빠름)
     const cachedData = localStorage.getItem('lotto_cache');
     if (cachedData) {
         try {
             const parsed = JSON.parse(cachedData);
-            // 캐시된 회차가 최신 회차와 같다면 즉시 표시하고 종료
-            if (parsed.drwNo === latestRound) {
-                renderWinningNumbers(parsed);
-                return; 
-            }
+            renderWinningNumbers(parsed);
+            // 캐시가 있더라도 최신 데이터인지 확인하기 위해 백그라운드에서 파일 로드 진행
         } catch (e) {
             console.error('캐시 파싱 에러:', e);
         }
     }
 
-    // 2. 캐시가 없거나 오래된 경우에만 네트워크 요청
+    // 2. 서버(저장소)의 lotto_data.json 파일 로드 (프록시 없이 직접 접속하므로 매우 빠름)
     try {
-        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${latestRound}`)}`);
+        // 캐시를 방지하기 위해 쿼리 스트링 추가
+        const response = await fetch(`./lotto_data.json?t=${new Date().getTime()}`);
         if (!response.ok) throw new Error('Network response was not ok');
         
-        const wrapper = await response.json();
-        const data = JSON.parse(wrapper.contents);
+        const data = await response.json();
 
-        if (data.returnValue === 'success') {
-            // 데이터 렌더링 및 캐시 저장
+        if (data.returnValue === 'success' || data.drwNo) {
+            // 데이터 렌더링 및 브라우저 캐시 업데이트
             renderWinningNumbers(data);
             localStorage.setItem('lotto_cache', JSON.stringify(data));
-        } else {
-            throw new Error('API returned failure');
         }
     } catch (error) {
-        console.error('당첨 번호 로드 실패:', error);
-        // 실패 시 폴백 데이터 표시
-        const fallback = {
-            drwNo: 1212,
-            drwNoDate: '2026-02-21',
-            drwtNo1: 5, drwtNo2: 8, drwtNo3: 25, drwtNo4: 31, drwtNo5: 41, drwtNo6: 44,
-            bnusNo: 45
-        };
-        renderWinningNumbers(fallback, true);
+        console.error('데이터 로드 실패:', error);
+        // 실패 시 폴백 데이터 (최소한의 안전장치)
+        if (!cachedData) {
+            const fallback = { drwNo: 1212, drwNoDate: '2026-02-21', drwtNo1: 5, drwtNo2: 8, drwtNo3: 25, drwtNo4: 31, drwtNo5: 41, drwtNo6: 44, bnusNo: 45 };
+            renderWinningNumbers(fallback, true);
+        }
     }
 }
 
