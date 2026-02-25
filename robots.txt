@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lhm2466-ship-it.github.io/jason_lotto/sitemap.xml
