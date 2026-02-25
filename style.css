@@ -143,8 +143,32 @@ h1 { color: var(--text-color); margin-bottom: 20px; font-size: 24px; }
     font-size: 13px;
     font-weight: bold;
     color: var(--secondary-text);
-    width: 55px; /* 라벨 너비 */
+    width: 65px; /* 라벨 너비 약간 확대 */
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.mode-toggle-btn {
+    padding: 2px 4px;
+    font-size: 10px;
+    cursor: pointer;
+    background-color: var(--selection-bg);
+    color: var(--secondary-text);
+    border: 1px solid var(--btn-border);
+    border-radius: 4px;
+    transition: all 0.2s;
+    width: fit-content;
+}
+.mode-toggle-btn.active-semi {
+    background-color: #007BFF;
+    color: white;
+    border-color: #007BFF;
+}
+.mode-toggle-btn.active-auto {
+    background-color: #6c757d;
+    color: white;
+    border-color: #6c757d;
 }
 /* 한 줄에 들어갈 수 있도록 공 크기 45px로 축소 */
 .ball {

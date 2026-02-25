@@ -2,6 +2,7 @@ const weights = [0.021703217032170324, 0.021687679317257508, 0.02201402201402201
 
 let selectedNumbers = [];
 let lastGenerated = null; 
+let gameModes = ['자동', '자동', '자동', '자동', '자동'];
 
 (function init() {
     const grid = document.getElementById('numberGrid');
@@ -35,6 +36,16 @@ function toggleTheme() {
     }
 }
 
+function toggleGameMode(idx) {
+    if (gameModes[idx] === '자동') {
+        gameModes[idx] = '반자동';
+    } else {
+        gameModes[idx] = '자동';
+    }
+    lastGenerated = null;
+    renderBalls();
+}
+
 function getBallColorClass(num) {
     if (num <= 10) return 'ball-yellow';
     if (num <= 20) return 'ball-blue';
@@ -55,19 +66,31 @@ function renderBalls() {
     const resultDiv = document.getElementById('result');
     let htmlStr = '';
     
-    let labelType = selectedNumbers.length > 0 ? '반자동' : '자동';
-
     for (let g = 0; g < 5; g++) {
-        let rowLabel = String.fromCharCode(65 + g); // A, B, C, D, E
+        let rowLabel = String.fromCharCode(65 + g); 
+        let mode = gameModes[g];
+        let modeClass = mode === '반자동' ? 'active-semi' : 'active-auto';
+        
         htmlStr += `<div class="game-row">`;
-        htmlStr += `<div class="game-label">${rowLabel} ${labelType}</div>`;
+        htmlStr += `<div class="game-label">
+            <span>${rowLabel} ${mode}</span>
+            <button class="mode-toggle-btn ${modeClass}" onclick="toggleGameMode(${g})">변경</button>
+        </div>`;
         
         if (lastGenerated === null) {
-            for (let i = 0; i < 6; i++) {
-                if (i < selectedNumbers.length) {
-                    let val = selectedNumbers[i];
-                    htmlStr += `<span class="ball ${getBallColorClass(val)}">${val}</span>`;
-                } else {
+            let displayedBalls = 0;
+            if (mode === '반자동') {
+                for (let i = 0; i < 6; i++) {
+                    if (i < selectedNumbers.length) {
+                        let val = selectedNumbers[i];
+                        htmlStr += `<span class="ball ${getBallColorClass(val)}">${val}</span>`;
+                        displayedBalls++;
+                    } else {
+                        htmlStr += `<span class="ball ball-black">?</span>`;
+                    }
+                }
+            } else {
+                for (let i = 0; i < 6; i++) {
                     htmlStr += `<span class="ball ball-black">?</span>`;
                 }
             }
@@ -115,7 +138,7 @@ function shareResult() {
 
     const canvas = document.createElement('canvas');
     canvas.width = 800;
-    canvas.height = 760; // 5줄을 그리기 위해 높이를 늘림
+    canvas.height = 760; 
     const ctx = canvas.getContext('2d');
 
     ctx.fillStyle = '#ffffff';
@@ -133,15 +156,14 @@ function shareResult() {
     let startY = 200;
     let rowGap = 100;
     
-    let labelType = selectedNumbers.length > 0 ? '반자동' : '자동';
-
     for (let g = 0; g < 5; g++) {
         let ballY = startY + (g * rowGap);
-        
+        let mode = gameModes[g];
+
         ctx.fillStyle = '#555555';
         ctx.font = 'bold 24px sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText(`${String.fromCharCode(65 + g)} ${labelType}`, 60, ballY + 2);
+        ctx.fillText(`${String.fromCharCode(65 + g)} ${mode}`, 60, ballY + 2);
 
         ctx.textAlign = 'center';
         for (let i = 0; i < 6; i++) {
@@ -205,11 +227,13 @@ function generateLotto() {
     let allFixedSlots = [];
 
     for (let g = 0; g < 5; g++) {
-        let finalNumbers = [...selectedNumbers];
+        let mode = gameModes[g];
+        let finalNumbers = (mode === '반자동') ? [...selectedNumbers] : [];
         let available = Array.from({length: 45}, (_, i) => i + 1);
         let currentWeights = [...weights];
 
-        selectedNumbers.forEach(num => {
+        // 고정된 번호는 제외하고 추첨 준비
+        finalNumbers.forEach(num => {
             let idx = available.indexOf(num);
             if (idx > -1) {
                 available.splice(idx, 1);
@@ -237,32 +261,39 @@ function generateLotto() {
         newGeneratedGames.push([...finalNumbers].sort((a, b) => a - b));
 
         let fixedSlots = [null, null, null, null, null, null];
-        if (lastGenerated === null) {
-            for (let i = 0; i < selectedNumbers.length; i++) {
-                fixedSlots[i] = selectedNumbers[i];
-            }
-        } else {
-            selectedNumbers.forEach(num => {
-                let prevIdx = lastGenerated[g].indexOf(num);
-                if (prevIdx > -1) {
-                    fixedSlots[prevIdx] = num;
+        if (mode === '반자동') {
+            if (lastGenerated === null) {
+                for (let i = 0; i < selectedNumbers.length; i++) {
+                    fixedSlots[i] = selectedNumbers[i];
                 }
-            });
+            } else {
+                selectedNumbers.forEach(num => {
+                    let prevIdx = lastGenerated[g].indexOf(num);
+                    if (prevIdx > -1) {
+                        fixedSlots[prevIdx] = num;
+                    }
+                });
+            }
         }
         allFixedSlots.push(fixedSlots);
     }
 
     let spinCount = 0;
     const maxSpins = 20; 
-    let labelType = selectedNumbers.length > 0 ? '반자동' : '자동';
     
     const spinInterval = setInterval(() => {
         let htmlStr = '';
         
         for (let g = 0; g < 5; g++) {
             let rowLabel = String.fromCharCode(65 + g);
+            let mode = gameModes[g];
+            let modeClass = mode === '반자동' ? 'active-semi' : 'active-auto';
+
             htmlStr += `<div class="game-row">`;
-            htmlStr += `<div class="game-label">${rowLabel} ${labelType}</div>`;
+            htmlStr += `<div class="game-label">
+                <span>${rowLabel} ${mode}</span>
+                <button class="mode-toggle-btn ${modeClass}">변경</button>
+            </div>`;
 
             for (let k = 0; k < 6; k++) {
                 if (allFixedSlots[g][k] !== null) {
