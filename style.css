@@ -305,7 +305,7 @@ button.share-btn:active { transform: translateY(1px); }
 }
 
 .comments-container {
-    max-width: 900px;
+    max-width: 500px; /* 번호 생성기 크기와 동일하게 조정 */
     width: 95%;
     margin: 40px auto;
     padding: 20px;
