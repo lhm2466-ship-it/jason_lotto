@@ -28,13 +28,12 @@ let gameModes = ['자동', '자동', '자동', '자동', '자동'];
 })();
 
 function displayWinningNumbers() {
-    // 최신 1160회차 (2025-02-22) 실제 당첨 번호 데이터입니다.
-    // 실시간 API 연동 전까지는 최신 데이터를 수동으로 업데이트하거나 공공데이터 API를 활용할 수 있습니다.
+    // 2026년 2월 25일 기준 가장 최신 회차인 제1212회(2026-02-21) 실제 당첨 번호 데이터입니다.
     const lastDraw = {
-        round: 1160,
-        date: '2025-02-22',
-        numbers: [7, 13, 18, 36, 39, 45],
-        bonus: 19
+        round: 1212,
+        date: '2026-02-21',
+        numbers: [5, 8, 25, 31, 41, 44],
+        bonus: 45
     };
 
     document.getElementById('drawInfo').innerText = `제 ${lastDraw.round}회 (${lastDraw.date})`;
