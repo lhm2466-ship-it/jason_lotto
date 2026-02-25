@@ -304,6 +304,17 @@ button.share-btn:active { transform: translateY(1px); }
     transition: background-color 0.3s, box-shadow 0.3s;
 }
 
+.comments-container {
+    max-width: 900px;
+    width: 95%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: var(--container-bg);
+    border-radius: 20px;
+    box-shadow: 0 10px 25px var(--shadow);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
 /* 모바일 화면 조정 */
 @media (max-width: 850px) {
     .app-wrapper {
