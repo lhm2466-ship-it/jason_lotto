@@ -1,3 +1,30 @@
+// 정책 모달 관련 데이터 및 함수
+const policyData = {
+    privacy: `
+        <h2>개인정보처리방침</h2>
+        <p>JASON LOTTO는 이용자의 개인정보를 중요하게 생각하며, 관련 법령을 준수합니다.</p>
+        <p>1. <strong>수집 항목:</strong> 본 사이트는 별도의 회원가입 없이 이용 가능하며, 이용자의 개인정보를 서버에 저장하지 않습니다.</p>
+        <p>2. <strong>브라우저 저장소:</strong> 사용자가 선택한 테마 정보 및 로또 당첨 번호 캐시 데이터를 브라우저의 로컬 스토리지(LocalStorage)에 저장하여 서비스 편의를 제공합니다. 이 데이터는 이용자의 기기에만 존재합니다.</p>
+        <p>3. <strong>타사 서비스:</strong> 본 사이트는 통계 분석 및 광고 제공을 위해 Google AdSense, Disqus를 이용할 수 있으며, 이 과정에서 쿠키가 사용될 수 있습니다.</p>
+    `,
+    terms: `
+        <h2>이용약관</h2>
+        <p>제이슨 로또(이하 '서비스')의 이용과 관련하여 안내드립니다.</p>
+        <p>1. <strong>서비스 목적:</strong> 본 서비스는 로또 6/45의 과거 당첨 데이터를 기반으로 한 확률 가중치 기반 번호 생성 도구입니다.</p>
+        <p>2. <strong>책임 한계:</strong> 본 서비스에서 생성된 번호는 통계적 수치에 기반한 참고용일 뿐이며, 실제 당첨을 보장하지 않습니다. 로또 구매의 책임은 본인에게 있으며, 낙첨으로 인한 어떠한 손해에 대해서도 서비스는 책임을 지지 않습니다.</p>
+        <p>3. <strong>무단 복제 금지:</strong> 서비스의 디자인 및 알고리즘 구현 방식을 무단으로 복제하여 상업적으로 이용하는 것을 금지합니다.</p>
+    `
+};
+
+function openPolicy(type) {
+    document.getElementById('policyText').innerHTML = policyData[type];
+    document.getElementById('policyModal').style.display = 'block';
+}
+
+function closePolicy() {
+    document.getElementById('policyModal').style.display = 'none';
+}
+
 const weights = [0.021703217032170324, 0.021687679317257508, 0.022014022014022016, 0.02167214160434469, 0.021625516999719178, 0.02181197603220672, 0.021780891582061608, 0.021641059395187722, 0.02171875952932918, 0.02172653077790861, 0.021742073275067466, 0.02188968851800101, 0.02181197603220672, 0.021749844523646892, 0.021742073275067466, 0.02184306054817112, 0.021749844523646892, 0.02181197603220672, 0.02177312033348218, 0.021641059395187722, 0.02184306054817112, 0.021710988280749755, 0.021687679317257508, 0.02177312033348218, 0.021625516999719178, 0.021749844523646892, 0.021765349084902753, 0.021757596804274823, 0.02171875952932918, 0.021780891582061608, 0.021757596804274823, 0.0216799104608011, 0.021796434079220464, 0.021788662830641038, 0.021780891582061608, 0.021757596804274823, 0.021742073275067466, 0.02184306054817112, 0.021757596804274823, 0.021695450565836935, 0.021710988280749755, 0.021757596804274823, 0.02171875952932918, 0.021710988280749755, 0.021819747280786146];
 
 let selectedNumbers = [];
@@ -6,19 +33,22 @@ let gameModes = ['자동', '자동', '자동', '자동', '자동'];
 
 (function init() {
     const grid = document.getElementById('numberGrid');
-    for (let i = 1; i <= 45; i++) {
-        let btn = document.createElement('button');
-        btn.className = 'num-btn';
-        btn.innerText = i;
-        btn.onclick = function() { toggleNumber(i, btn); };
-        grid.appendChild(btn);
+    if (grid) {
+        for (let i = 1; i <= 45; i++) {
+            let btn = document.createElement('button');
+            btn.className = 'num-btn';
+            btn.innerText = i;
+            btn.onclick = function() { toggleNumber(i, btn); };
+            grid.appendChild(btn);
+        }
     }
     
     // 테마 초기화
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
-        document.getElementById('themeToggle').innerText = '☀️';
+        const toggleBtn = document.getElementById('themeToggle');
+        if (toggleBtn) toggleBtn.innerText = '☀️';
     }
 
     // 지난주 당첨 번호 실시간 업데이트
@@ -32,34 +62,32 @@ async function updateWinningNumbers() {
     const ballsContainer = document.getElementById('winningBalls');
     const bonusContainer = document.getElementById('bonusBallContainer');
 
-    // 1. 로컬 저장소(브라우저 캐시) 우선 확인 (가장 빠름)
+    if (!drawInfoEl) return;
+
+    // 1. 로컬 저장소(브라우저 캐시) 우선 확인
     const cachedData = localStorage.getItem('lotto_cache');
     if (cachedData) {
         try {
             const parsed = JSON.parse(cachedData);
             renderWinningNumbers(parsed);
-            // 캐시가 있더라도 최신 데이터인지 확인하기 위해 백그라운드에서 파일 로드 진행
         } catch (e) {
             console.error('캐시 파싱 에러:', e);
         }
     }
 
-    // 2. 서버(저장소)의 lotto_data.json 파일 로드 (프록시 없이 직접 접속하므로 매우 빠름)
+    // 2. 서버(저장소)의 lotto_data.json 파일 로드
     try {
-        // 캐시를 방지하기 위해 쿼리 스트링 추가
         const response = await fetch(`./lotto_data.json?t=${new Date().getTime()}`);
         if (!response.ok) throw new Error('Network response was not ok');
         
         const data = await response.json();
 
         if (data.returnValue === 'success' || data.drwNo) {
-            // 데이터 렌더링 및 브라우저 캐시 업데이트
             renderWinningNumbers(data);
             localStorage.setItem('lotto_cache', JSON.stringify(data));
         }
     } catch (error) {
         console.error('데이터 로드 실패:', error);
-        // 실패 시 폴백 데이터 (최소한의 안전장치)
         if (!cachedData) {
             const fallback = { drwNo: 1212, drwNoDate: '2026-02-21', drwtNo1: 5, drwtNo2: 8, drwtNo3: 25, drwtNo4: 31, drwtNo5: 41, drwtNo6: 44, bnusNo: 45 };
             renderWinningNumbers(fallback, true);
@@ -72,25 +100,31 @@ function renderWinningNumbers(data, isFallback = false) {
     const ballsContainer = document.getElementById('winningBalls');
     const bonusContainer = document.getElementById('bonusBallContainer');
 
-    drawInfoEl.innerText = `제 ${data.drwNo}회 (${data.drwNoDate})${isFallback ? ' *' : ''}`;
+    if (drawInfoEl) drawInfoEl.innerText = `제 ${data.drwNo}회 (${data.drwNoDate})${isFallback ? ' *' : ''}`;
     
     const numbers = [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6];
-    ballsContainer.innerHTML = numbers
-        .map(num => `<span class="ball ${getBallColorClass(num)}">${num}</span>`)
-        .join('');
+    if (ballsContainer) {
+        ballsContainer.innerHTML = numbers
+            .map(num => `<span class="ball ${getBallColorClass(num)}">${num}</span>`)
+            .join('');
+    }
 
-    bonusContainer.innerHTML = `<span class="ball ${getBallColorClass(data.bnusNo)}">${data.bnusNo}</span>`;
+    if (bonusContainer) {
+        bonusContainer.innerHTML = `<span class="ball ${getBallColorClass(data.bnusNo)}">${data.bnusNo}</span>`;
+    }
 }
 
 function toggleTheme() {
     const isDark = document.body.classList.toggle('dark-mode');
     const toggleBtn = document.getElementById('themeToggle');
-    if (isDark) {
-        toggleBtn.innerText = '☀️';
-        localStorage.setItem('theme', 'dark');
-    } else {
-        toggleBtn.innerText = '🌓';
-        localStorage.setItem('theme', 'light');
+    if (toggleBtn) {
+        if (isDark) {
+            toggleBtn.innerText = '☀️';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            toggleBtn.innerText = '🌓';
+            localStorage.setItem('theme', 'light');
+        }
     }
 }
 
@@ -122,6 +156,8 @@ function getBallHexColor(num) {
 
 function renderBalls() {
     const resultDiv = document.getElementById('result');
+    if (!resultDiv) return;
+
     let htmlStr = '';
     
     for (let g = 0; g < 5; g++) {
@@ -136,13 +172,11 @@ function renderBalls() {
         </div>`;
         
         if (lastGenerated === null) {
-            let displayedBalls = 0;
             if (mode === '반자동') {
                 for (let i = 0; i < 6; i++) {
                     if (i < selectedNumbers.length) {
                         let val = selectedNumbers[i];
                         htmlStr += `<span class="ball ${getBallColorClass(val)}">${val}</span>`;
-                        displayedBalls++;
                     } else {
                         htmlStr += `<span class="ball ball-black">?</span>`;
                     }
@@ -277,6 +311,7 @@ function downloadImage() {
 function generateLotto() {
     const btn = document.getElementById('generateBtn');
     const resultDiv = document.getElementById('result');
+    if (!btn || !resultDiv) return;
     
     btn.disabled = true;
     btn.innerText = "번호 추첨 중...";
@@ -290,7 +325,6 @@ function generateLotto() {
         let available = Array.from({length: 45}, (_, i) => i + 1);
         let currentWeights = [...weights];
 
-        // 고정된 번호는 제외하고 추첨 준비
         finalNumbers.forEach(num => {
             let idx = available.indexOf(num);
             if (idx > -1) {
@@ -374,8 +408,16 @@ function generateLotto() {
             lastGenerated = newGeneratedGames;
             renderBalls();
             
-            btn.innerText = "5게임 생성하기";
+            btn.innerText = "행운의 5게임 생성";
             btn.disabled = false;
         }
     }, 50); 
 }
+
+// 정책 모달 외부 클릭 시 닫기
+window.addEventListener('click', function(event) {
+    const policyModal = document.getElementById('policyModal');
+    const shareModal = document.getElementById('shareModal');
+    if (event.target == policyModal) closePolicy();
+    if (event.target == shareModal) closeModal();
+});

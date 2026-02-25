@@ -3,100 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>맞춤형 로또 번호 생성기 v2.0</title>
+    <title>제이슨 로또 - 가중치 기반 로또 번호 생성기</title>
+    <meta name="description" content="과거 당첨 통계 기반 가중치 알고리즘을 적용한 스마트 로또 번호 생성기. 반자동 및 자동 기능을 무료로 이용하세요.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-wrapper">
-        <aside class="sidebar">
-            <h2>지난주 당첨 번호</h2>
-            <div id="drawInfo" class="draw-info">로딩 중...</div>
-            <div id="winningBalls" class="winning-balls">
-                <!-- 당첨 번호 공들 -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="brand">
+                <span class="logo-icon">🍀</span>
+                <span class="brand-name">JASON LOTTO</span>
             </div>
+            <nav class="main-nav">
+                <a href="#generator">번호 생성</a>
+                <a href="#algorithm">알고리즘 정보</a>
+                <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="테마 변경">🌓</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="app-wrapper">
+        <!-- 왼쪽: 당첨 정보 -->
+        <aside class="sidebar card">
+            <h2>최신 당첨 결과</h2>
+            <div id="drawInfo" class="draw-info">데이터 로드 중...</div>
+            <div id="winningBalls" class="winning-balls"></div>
             <div class="bonus-area">
                 <span>+</span>
-                <div id="bonusBallContainer">
-                    <!-- 보너스 번호 공 -->
-                </div>
+                <div id="bonusBallContainer"></div>
             </div>
-            <div class="bonus-tag">보너스</div>
-
-            <!-- 사이드바 광고 슬롯 (Vertical/Square) -->
-            <div class="ad-slot sidebar-ad" style="margin-top: 30px;">
-                <div class="ad-placeholder">광고 영역</div>
+            <p class="bonus-tag">보너스 번호</p>
+            <div class="sidebar-info">
+                <p>매주 토요일 밤 8시 45분경<br>최신 당첨 번호가 자동 업데이트됩니다.</p>
             </div>
         </aside>
 
-        <div class="container">
-            <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="테마 변경">🌓</button>
-            <img class="logo-img" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 60'%3E%3Cg font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle' fill='%23fff'%3E%3Ccircle cx='30' cy='30' r='25' fill='%23fbc400'/%3E%3Ctext x='30' y='41'%3EL%3C/text%3E%3Ccircle cx='80' cy='30' r='25' fill='%2369c8f2'/%3E%3Ctext x='80' y='41'%3EO%3C/text%3E%3Ccircle cx='130' cy='30' r='25' fill='%23ff7272'/%3E%3Ctext x='130' y='41'%3ET%3C/text%3E%3Ccircle cx='180' cy='30' r='25' fill='%23aaaaaa'/%3E%3Ctext x='180' y='41'%3ET%3C/text%3E%3Ccircle cx='230' cy='30' r='25' fill='%23b0d840'/%3E%3Ctext x='230' y='41'%3EO%3C/text%3E%3C/g%3E%3C/svg%3E" alt="LOTTO Logo">
-            
-            <h1>맞춤형 로또 번호 생성기<span class="version">v2.0</span></h1>
-
-            <!-- 상단 광고 슬롯 (Leaderboard) -->
-            <div class="ad-slot top-ad">
-                <div class="ad-placeholder">광고 영역 (가로형)</div>
-            </div>
+        <!-- 중앙: 번호 생성기 -->
+        <section id="generator" class="container card">
+            <h1>스마트 번호 생성기 <span class="badge">v2.5</span></h1>
+            <p class="section-desc">원하는 고정수를 선택하고 가중치 기반 번호를 추출하세요.</p>
             
             <div class="selection-area">
                 <div class="selection-header">
-                    <div class="selection-title">원하는 번호를 미리 선택해 보세요 (최대 5개)</div>
+                    <span class="selection-title">번호 선택 (최대 5개)</span>
                     <button class="reset-btn" onclick="resetSelection()">초기화</button>
                 </div>
                 <div class="number-grid" id="numberGrid"></div>
             </div>
 
-            <!-- 중간 광고 슬롯 (In-feed) -->
-            <div class="ad-slot mid-ad">
-                <div class="ad-placeholder">광고 영역 (콘텐츠형)</div>
-            </div>
-
-            <div class="ball-container" id="result">
-                </div>
+            <div class="ball-container" id="result"></div>
             
             <div class="button-group">
-                <button id="generateBtn" class="generate-btn" onclick="generateLotto()">5게임 생성하기</button>
-                <button class="share-btn" onclick="shareResult()">📤 공유</button>
+                <button id="generateBtn" class="generate-btn" onclick="generateLotto()">행운의 5게임 생성</button>
+                <button class="share-btn" onclick="shareResult()">📤 결과 공유</button>
+            </div>
+        </section>
+
+        <!-- 오른쪽: 댓글 및 정보 -->
+        <section class="info-column">
+            <div class="comments-container card">
+                <h3>커뮤니티 소통</h3>
+                <div id="disqus_thread"></div>
+            </div>
+            
+            <div id="algorithm" class="algorithm-info card">
+                <h3>가중치 알고리즘 안내</h3>
+                <p>제이슨 로또는 단순 무작위 추출이 아닌, <strong>역대 당첨 빈도 가중치(Weighted Probability)</strong>를 적용합니다.</p>
+                <ul>
+                    <li>통계적 빈도 분석 데이터 적용</li>
+                    <li>고정수 반영 반자동 추출 엔진</li>
+                    <li>균형 잡힌 번호 조합 필터링</li>
+                </ul>
+                <p class="disclaimer">※ 본 결과는 당첨을 보장하지 않으며 재미로 활용하시기 바랍니다.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 JASON LOTTO. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="javascript:void(0)" onclick="openPolicy('privacy')">개인정보처리방침</a>
+                <a href="javascript:void(0)" onclick="openPolicy('terms')">이용약관</a>
             </div>
         </div>
+    </footer>
 
-        <div class="comments-container">
-            <div id="disqus_thread"></div>
-            <!-- 댓글창 하단 광고 슬롯 -->
-            <div class="ad-slot sidebar-ad">
-                <div class="ad-placeholder">광고 영역 (사각형)</div>
-            </div>
+    <!-- 모달: 정책 안내 -->
+    <div id="policyModal" class="modal">
+        <div class="modal-content policy-content">
+            <span class="close-btn" onclick="closePolicy()">&times;</span>
+            <div id="policyText"></div>
         </div>
     </div>
 
-    <!-- 하단 앵커 광고 슬롯 -->
-    <div class="ad-slot bottom-ad">
-        <div class="ad-placeholder">하단 배너 광고 영역</div>
-    </div>
-
-    <script>
-        (function() { 
-        var d = document, s = d.createElement('script');
-        s.src = 'https://jasonlotto.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
+    <!-- 공유 모달 -->
     <div id="shareModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">×</span>
-            <h2 style="margin-top: 0; color: #333; font-size: 20px;">이미지 생성 완료! 🍀</h2>
-            <div class="preview-text">
-                <p><b>[PC]</b> 이미지를 <b>우클릭하여 '이미지 복사'</b> 후 원하는 곳에 붙여넣기<br>
-                <b>[모바일]</b> 이미지를 <b>꾹 눌러서 '공유/복사'</b> 하세요!</p>
-            </div>
-            <img id="previewImg" class="preview-img" src="" alt="생성된 로또 번호 이미지">
-            <div>
-                <button class="generate-btn" style="font-size: 15px; padding: 12px 20px;" onclick="downloadImage()">💾 이미지로 다운로드</button>
-            </div>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>행운 번호 이미지 생성 완료!</h2>
+            <p class="preview-text">이미지를 저장하거나 공유하여 행운을 나누세요.</p>
+            <img id="previewImg" class="preview-img" src="" alt="로또 번호 결과">
+            <button class="generate-btn" onclick="downloadImage()">이미지로 저장하기</button>
         </div>
     </div>
 
