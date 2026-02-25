@@ -21,30 +21,64 @@ let gameModes = ['자동', '자동', '자동', '자동', '자동'];
         document.getElementById('themeToggle').innerText = '☀️';
     }
 
-    // 지난주 당첨 번호 표시 (예시 데이터)
-    displayWinningNumbers();
+    // 지난주 당첨 번호 실시간 업데이트
+    updateWinningNumbers();
 
     renderBalls();
 })();
 
-function displayWinningNumbers() {
-    // 2026년 2월 25일 기준 가장 최신 회차인 제1212회(2026-02-21) 실제 당첨 번호 데이터입니다.
-    const lastDraw = {
-        round: 1212,
-        date: '2026-02-21',
-        numbers: [5, 8, 25, 31, 41, 44],
-        bonus: 45
+async function updateWinningNumbers() {
+    const drawInfoEl = document.getElementById('drawInfo');
+    const ballsContainer = document.getElementById('winningBalls');
+    const bonusContainer = document.getElementById('bonusBallContainer');
+
+    // 현재 날짜 기준 최신 회차 계산
+    const getLatestRound = () => {
+        const firstDrawDate = new Date('2002-12-07T21:00:00+09:00'); // 1회차 추첨일
+        const now = new Date();
+        const diff = now - firstDrawDate;
+        const weeks = Math.floor(diff / (7 * 24 * 60 * 60 * 1000));
+        return weeks + 1;
     };
 
-    document.getElementById('drawInfo').innerText = `제 ${lastDraw.round}회 (${lastDraw.date})`;
+    const latestRound = getLatestRound();
     
-    const ballsContainer = document.getElementById('winningBalls');
-    ballsContainer.innerHTML = lastDraw.numbers
-        .map(num => `<span class="ball ${getBallColorClass(num)}">${num}</span>`)
-        .join('');
+    try {
+        // CORS 우회를 위해 allorigins 프록시 사용
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${latestRound}`)}`);
+        
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const wrapper = await response.json();
+        const data = JSON.parse(wrapper.contents);
 
-    const bonusContainer = document.getElementById('bonusBallContainer');
-    bonusContainer.innerHTML = `<span class="ball ${getBallColorClass(lastDraw.bonus)}">${lastDraw.bonus}</span>`;
+        if (data.returnValue === 'success') {
+            drawInfoEl.innerText = `제 ${data.drwNo}회 (${data.drwNoDate})`;
+            
+            const numbers = [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6];
+            ballsContainer.innerHTML = numbers
+                .map(num => `<span class="ball ${getBallColorClass(num)}">${num}</span>`)
+                .join('');
+
+            bonusContainer.innerHTML = `<span class="ball ${getBallColorClass(data.bnusNo)}">${data.bnusNo}</span>`;
+        } else {
+            throw new Error('API returned failure');
+        }
+    } catch (error) {
+        console.error('당첨 번호 로드 실패:', error);
+        // 실패 시 마지막 확인된 1212회 데이터로 폴백
+        const fallback = {
+            round: 1212,
+            date: '2026-02-21',
+            numbers: [5, 8, 25, 31, 41, 44],
+            bonus: 45
+        };
+        drawInfoEl.innerText = `제 ${fallback.round}회 (${fallback.date}) *`;
+        ballsContainer.innerHTML = fallback.numbers
+            .map(num => `<span class="ball ${getBallColorClass(num)}">${num}</span>`)
+            .join('');
+        bonusContainer.innerHTML = `<span class="ball ${getBallColorClass(fallback.bonus)}">${fallback.bonus}</span>`;
+    }
 }
 
 function toggleTheme() {
