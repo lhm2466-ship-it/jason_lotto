@@ -34,7 +34,7 @@ async function updateWinningNumbers() {
 
     // 현재 날짜 기준 최신 회차 계산
     const getLatestRound = () => {
-        const firstDrawDate = new Date('2002-12-07T21:00:00+09:00'); // 1회차 추첨일
+        const firstDrawDate = new Date('2002-12-07T21:00:00+09:00');
         const now = new Date();
         const diff = now - firstDrawDate;
         const weeks = Math.floor(diff / (7 * 24 * 60 * 60 * 1000));
@@ -43,42 +43,62 @@ async function updateWinningNumbers() {
 
     const latestRound = getLatestRound();
     
+    // 1. 로컬 스토리지에서 캐시된 데이터 확인
+    const cachedData = localStorage.getItem('lotto_cache');
+    if (cachedData) {
+        try {
+            const parsed = JSON.parse(cachedData);
+            // 캐시된 회차가 최신 회차와 같다면 즉시 표시하고 종료
+            if (parsed.drwNo === latestRound) {
+                renderWinningNumbers(parsed);
+                return; 
+            }
+        } catch (e) {
+            console.error('캐시 파싱 에러:', e);
+        }
+    }
+
+    // 2. 캐시가 없거나 오래된 경우에만 네트워크 요청
     try {
-        // CORS 우회를 위해 allorigins 프록시 사용
         const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${latestRound}`)}`);
-        
         if (!response.ok) throw new Error('Network response was not ok');
         
         const wrapper = await response.json();
         const data = JSON.parse(wrapper.contents);
 
         if (data.returnValue === 'success') {
-            drawInfoEl.innerText = `제 ${data.drwNo}회 (${data.drwNoDate})`;
-            
-            const numbers = [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6];
-            ballsContainer.innerHTML = numbers
-                .map(num => `<span class="ball ${getBallColorClass(num)}">${num}</span>`)
-                .join('');
-
-            bonusContainer.innerHTML = `<span class="ball ${getBallColorClass(data.bnusNo)}">${data.bnusNo}</span>`;
+            // 데이터 렌더링 및 캐시 저장
+            renderWinningNumbers(data);
+            localStorage.setItem('lotto_cache', JSON.stringify(data));
         } else {
             throw new Error('API returned failure');
         }
     } catch (error) {
         console.error('당첨 번호 로드 실패:', error);
-        // 실패 시 마지막 확인된 1212회 데이터로 폴백
+        // 실패 시 폴백 데이터 표시
         const fallback = {
-            round: 1212,
-            date: '2026-02-21',
-            numbers: [5, 8, 25, 31, 41, 44],
-            bonus: 45
+            drwNo: 1212,
+            drwNoDate: '2026-02-21',
+            drwtNo1: 5, drwtNo2: 8, drwtNo3: 25, drwtNo4: 31, drwtNo5: 41, drwtNo6: 44,
+            bnusNo: 45
         };
-        drawInfoEl.innerText = `제 ${fallback.round}회 (${fallback.date}) *`;
-        ballsContainer.innerHTML = fallback.numbers
-            .map(num => `<span class="ball ${getBallColorClass(num)}">${num}</span>`)
-            .join('');
-        bonusContainer.innerHTML = `<span class="ball ${getBallColorClass(fallback.bonus)}">${fallback.bonus}</span>`;
+        renderWinningNumbers(fallback, true);
     }
+}
+
+function renderWinningNumbers(data, isFallback = false) {
+    const drawInfoEl = document.getElementById('drawInfo');
+    const ballsContainer = document.getElementById('winningBalls');
+    const bonusContainer = document.getElementById('bonusBallContainer');
+
+    drawInfoEl.innerText = `제 ${data.drwNo}회 (${data.drwNoDate})${isFallback ? ' *' : ''}`;
+    
+    const numbers = [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6];
+    ballsContainer.innerHTML = numbers
+        .map(num => `<span class="ball ${getBallColorClass(num)}">${num}</span>`)
+        .join('');
+
+    bonusContainer.innerHTML = `<span class="ball ${getBallColorClass(data.bnusNo)}">${data.bnusNo}</span>`;
 }
 
 function toggleTheme() {
