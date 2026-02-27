@@ -306,6 +306,15 @@ h3 { font-size: 18px; margin-top: 0; }
     border-radius: 12px;
     border: 1px solid var(--selection-border);
     animation: fadeIn 0.4s ease-out;
+    transition: box-shadow 0.2s;
+}
+
+.comment-item.has-more {
+    cursor: help;
+}
+
+.comment-item:hover {
+    box-shadow: 0 4px 12px var(--shadow);
 }
 
 .comment-header {
@@ -330,6 +339,18 @@ h3 { font-size: 18px; margin-top: 0; }
     color: var(--text-color);
     word-break: break-all;
     white-space: pre-line;
+}
+
+.text-full {
+    display: none;
+}
+
+.comment-item:hover .text-short {
+    display: none;
+}
+
+.comment-item:hover .text-full {
+    display: inline;
 }
 
 .loading, .empty-msg {

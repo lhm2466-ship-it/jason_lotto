@@ -448,15 +448,23 @@ function renderComments() {
     }
 
     commentsList.innerHTML = comments
-        .map(comment => `
-            <div class="comment-item">
-                <div class="comment-header">
-                    <span class="comment-author">${maskEmail(comment.email)}</span>
-                    <span class="comment-date">${formatDate(comment.timestamp)}</span>
+        .map(comment => {
+            const isLong = comment.text.length > 50;
+            const shortText = isLong ? comment.text.substring(0, 50) + '...' : comment.text;
+            
+            return `
+                <div class="comment-item ${isLong ? 'has-more' : ''}">
+                    <div class="comment-header">
+                        <span class="comment-author">${maskEmail(comment.email)}</span>
+                        <span class="comment-date">${formatDate(comment.timestamp)}</span>
+                    </div>
+                    <div class="comment-content">
+                        <span class="text-short">${escapeHtml(shortText)}</span>
+                        ${isLong ? `<span class="text-full">${escapeHtml(comment.text)}</span>` : ''}
+                    </div>
                 </div>
-                <div class="comment-content">${escapeHtml(comment.text)}</div>
-            </div>
-        `)
+            `;
+        })
         .join('');
 }
 
