@@ -421,3 +421,108 @@ window.addEventListener('click', function(event) {
     if (event.target == policyModal) closePolicy();
     if (event.target == shareModal) closeModal();
 });
+
+// --- 댓글 시스템 로직 ---
+let comments = [];
+
+function loadComments() {
+    const commentsList = document.getElementById('commentsList');
+    if (!commentsList) return;
+
+    // 로컬 스토리지에서 댓글 불러오기 (나중에 Firebase 등으로 확장 가능)
+    const savedComments = localStorage.getItem('lotto_comments');
+    if (savedComments) {
+        comments = JSON.parse(savedComments);
+    }
+
+    renderComments();
+}
+
+function renderComments() {
+    const commentsList = document.getElementById('commentsList');
+    if (!commentsList) return;
+
+    if (comments.length === 0) {
+        commentsList.innerHTML = '<p class="empty-msg">아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>';
+        return;
+    }
+
+    commentsList.innerHTML = comments
+        .map(comment => `
+            <div class="comment-item">
+                <div class="comment-header">
+                    <span class="comment-author">${maskEmail(comment.email)}</span>
+                    <span class="comment-date">${formatDate(comment.timestamp)}</span>
+                </div>
+                <div class="comment-content">${escapeHtml(comment.text)}</div>
+            </div>
+        `)
+        .join('');
+}
+
+function addComment() {
+    const emailInput = document.getElementById('commentEmail');
+    const textInput = document.getElementById('commentText');
+    const submitBtn = document.getElementById('submitComment');
+
+    const email = emailInput.value.trim();
+    const text = textInput.value.trim();
+
+    if (!email || !text) {
+        alert('이메일과 댓글 내용을 모두 입력해주세요.');
+        return;
+    }
+
+    if (!validateEmail(email)) {
+        alert('올바른 이메일 형식을 입력해주세요.');
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerText = '등록 중...';
+
+    const newComment = {
+        id: Date.now(),
+        email: email,
+        text: text,
+        timestamp: new Date().toISOString()
+    };
+
+    // 로컬 스토리지에 저장 (나중에 실제 서버 API 호출로 대체)
+    setTimeout(() => {
+        comments.unshift(newComment);
+        localStorage.setItem('lotto_comments', JSON.stringify(comments));
+
+        emailInput.value = '';
+        textInput.value = '';
+        submitBtn.disabled = false;
+        submitBtn.innerText = '댓글 남기기';
+
+        renderComments();
+    }, 500);
+}
+
+function maskEmail(email) {
+    const [user, domain] = email.split('@');
+    if (!domain) return email;
+    const maskedUser = user.substring(0, 3) + '***';
+    return `${maskedUser}@${domain}`;
+}
+
+function formatDate(isoString) {
+    const date = new Date(isoString);
+    return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
+function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// 초기화 실행
+loadComments();

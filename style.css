@@ -213,3 +213,133 @@ h3 { font-size: 18px; margin-top: 0; }
     .app-wrapper { flex-direction: column; align-items: center; }
     .sidebar, .container, .info-column { width: 100%; max-width: 600px; flex: none; }
 }
+
+/* 댓글 컨테이너 */
+.comments-container {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.comment-desc {
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-top: -10px;
+    margin-bottom: 5px;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--selection-bg);
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid var(--selection-border);
+}
+
+.comment-form input,
+.comment-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--btn-border);
+    border-radius: 10px;
+    font-size: 14px;
+    background: var(--container-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+}
+
+.comment-form textarea {
+    height: 90px;
+    resize: none;
+}
+
+.comment-form input:focus,
+.comment-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.comment-submit-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.comment-submit-btn:hover {
+    filter: brightness(1.1);
+}
+
+.comment-submit-btn:active {
+    transform: scale(0.98);
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-top: 10px;
+}
+
+.comments-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+    background: var(--btn-border);
+    border-radius: 10px;
+}
+
+.comment-item {
+    padding: 15px;
+    background: var(--selection-bg);
+    border-radius: 12px;
+    border: 1px solid var(--selection-border);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.comment-author {
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.comment-date {
+    color: var(--muted-text);
+}
+
+.comment-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-color);
+    word-break: break-all;
+    white-space: pre-line;
+}
+
+.loading, .empty-msg {
+    text-align: center;
+    color: var(--muted-text);
+    padding: 30px 0;
+    font-size: 14px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
