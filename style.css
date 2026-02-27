@@ -345,11 +345,11 @@ h3 { font-size: 18px; margin-top: 0; }
     display: none;
 }
 
-.comment-item:hover .text-short {
+.comment-item.has-more:hover .text-short {
     display: none;
 }
 
-.comment-item:hover .text-full {
+.comment-item.has-more:hover .text-full {
     display: inline;
 }
 
