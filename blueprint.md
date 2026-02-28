@@ -24,6 +24,11 @@ This project is a sophisticated, single-page web application that generates and 
     *   A "Share" button generates a high-quality PNG image of the lottery numbers using HTML Canvas.
     *   A modal popup displays the generated image, with instructions for copying or sharing.
     *   A "Download" button allows the user to save the image file directly.
+*   **Automatic Lotto Data Update:**
+    *   Winning numbers are automatically fetched from the Donghang Lotto API.
+    *   A GitHub Actions workflow (`update_lotto.yml`) runs every Saturday evening (KST) to update `lotto_data.json`.
+    *   The `update_lotto.js` script handles data fetching, error checking, and round calculation.
+    *   The frontend (`main.js`) fetches this JSON file and caches it in `localStorage` for performance.
 *   **Responsive & Modern UI:**
     *   A clean, centered, card-based layout that is visually appealing and easy to use.
     *   The design is responsive and adapts well to mobile screen sizes.

@@ -2,8 +2,12 @@ name: Lotto Data Auto Update
 
 on:
   schedule:
-    # 매주 토요일 11:36 UTC (한국 시간 토요일 20:36)
-    - cron: '36 11 * * 6'
+    # 매주 토요일 20:45 ~ 22:00 (KST) 사이 15분 간격으로 실행
+    # (UTC 기준 11:45 ~ 13:00)
+    - cron: '45,0,15,30,45 11,12 * * 6'
+    # 혹시 모를 누락을 위해 일요일 오전 10시(KST) 추가 실행
+    # (UTC 기준 01:00)
+    - cron: '0 1 * * 0'
   workflow_dispatch: # 수동 실행 가능
 
 jobs:
