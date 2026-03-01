@@ -24,6 +24,11 @@ This project is a sophisticated, single-page web application that generates and 
     *   A "Share" button generates a high-quality PNG image of the lottery numbers using HTML Canvas.
     *   A modal popup displays the generated image, with instructions for copying or sharing.
     *   A "Download" button allows the user to save the image file directly.
+*   **Firebase Realtime Comment System:**
+    *   Comments are stored and retrieved in real-time using Firebase Realtime Database.
+    *   Allows all users to share and see each other's comments instantly.
+    *   Ensures data persistence across different browsers and sessions.
+    *   Uses simple email masking for privacy protection.
 *   **Automatic Lotto Data Update:**
     *   Winning numbers are automatically fetched from the Donghang Lotto API.
     *   A GitHub Actions workflow (`update_lotto.yml`) runs every Saturday evening (KST) to update `lotto_data.json`.
