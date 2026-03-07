@@ -250,19 +250,6 @@ function loadComments() {
     });
 }
 
-async function updateWinningNumbers() {
-    try {
-        const response = await fetch(`./lotto_data.json?t=${new Date().getTime()}`);
-        if (response.ok) {
-            const data = await response.json();
-            document.getElementById('drawInfo').innerText = `제 ${data.drwNo}회 (${data.drwNoDate})`;
-            const numbers = [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6];
-            document.getElementById('winningBalls').innerHTML = numbers.map(n => `<span class="ball ${getBallColorClass(n)}">${n}</span>`).join('');
-            document.getElementById('bonusBallContainer').innerHTML = `<span class="ball ${getBallColorClass(data.bnusNo)}">${data.bnusNo}</span>`;
-        }
-    } catch (e) { console.error(e); }
-}
-
 // 초기화
 (function init() {
     const grid = document.getElementById('numberGrid');
@@ -273,7 +260,6 @@ async function updateWinningNumbers() {
         }
     }
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
-    updateWinningNumbers();
     renderBalls();
     loadComments();
 })();
