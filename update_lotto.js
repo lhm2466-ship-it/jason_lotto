@@ -37,13 +37,25 @@ async function updateLottoData() {
         
         // 응답 텍스트를 먼저 받아와서 JSON인지 확인 (보안장치나 에러 페이지 대응)
         const text = await response.text();
+        
+        // 간소화 페이지 체크 (HTML 응답인 경우)
+        if (text.includes('<!DOCTYPE html>') || text.includes('<html')) {
+            console.log(`[NOTICE] Round ${targetRound} API is currently restricted (Simplified Page Mode).`);
+            console.log('This usually happens on Saturday nights due to high traffic.');
+            // 예상 회차인데도 데이터를 못 가져오면 에러를 던져서 GitHub Actions가 실패로 표시되게 함 (재시도 유도)
+            if (targetRound <= expectedRound) {
+                throw new Error(`API returned HTML instead of JSON for expected round ${targetRound}.`);
+            }
+            return;
+        }
+
         let data;
         try {
             data = JSON.parse(text);
         } catch (e) {
-            console.log(`Failed to parse JSON for round ${targetRound}. Response was not JSON.`);
+            console.log(`Failed to parse JSON for round ${targetRound}.`);
             console.log('Response preview:', text.substring(0, 200));
-            return;
+            throw e;
         }
 
         if (data.returnValue === 'success') {

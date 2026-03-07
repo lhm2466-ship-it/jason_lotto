@@ -1,14 +1,7 @@
-name: Lotto Data Auto Update
+name: Lotto Data Manual Update
 
 on:
-  schedule:
-    # 매주 토요일 20:45 ~ 22:00 (KST) 사이 15분 간격으로 실행
-    # (UTC 기준 11:45 ~ 13:00)
-    - cron: '45,0,15,30,45 11,12 * * 6'
-    # 혹시 모를 누락을 위해 일요일 오전 10시(KST) 추가 실행
-    # (UTC 기준 01:00)
-    - cron: '0 1 * * 0'
-  workflow_dispatch: # 수동 실행 가능
+  workflow_dispatch: # GitHub Actions 탭에서 버튼을 눌러 수동 실행 가능
 
 jobs:
   update:
@@ -31,5 +24,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add lotto_data.json
-          git commit -m "Auto-update lotto_data.json [skip ci]" || echo "No changes to commit"
+          git commit -m "Manual update lotto_data.json [skip ci]" || echo "No changes to commit"
           git push

@@ -29,9 +29,9 @@ This project is a sophisticated, single-page web application that generates and 
     *   Allows all users to share and see each other's comments instantly.
     *   Ensures data persistence across different browsers and sessions.
     *   Uses simple email masking for privacy protection.
-*   **Automatic Lotto Data Update:**
-    *   Winning numbers are automatically fetched from the Donghang Lotto API.
-    *   A GitHub Actions workflow (`update_lotto.yml`) runs every Saturday evening (KST) to update `lotto_data.json`.
+*   **Manual Lotto Data Update:**
+    *   Winning numbers are manually fetched from the Donghang Lotto API via GitHub Actions.
+    *   A GitHub Actions workflow (`update_lotto.yml`) can be triggered by the user to update `lotto_data.json`.
     *   The `update_lotto.js` script handles data fetching, error checking, and round calculation.
     *   The frontend (`main.js`) fetches this JSON file and caches it in `localStorage` for performance.
 *   **Responsive & Modern UI:**
